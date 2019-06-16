@@ -67,10 +67,7 @@ namespace ftpClient
                 if (info[0] == type)
                     nameList.Add(name);
             }
-            foreach (string file in nameList)
-            {
-                Console.WriteLine(file);
-            }
+           
             return nameList;
         }
             

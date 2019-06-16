@@ -13,5 +13,8 @@ namespace ftpClient
         public const int OpenFolder = 2;        //文件夹打开
         public const int FixedDrive = 3;        //磁盘盘符
         public const int MyDocuments = 4;       //我的文档
+        public const int Document = 5;       //我的文档
+        public const int Server = 6;       //我的文档
+
     }
 }
