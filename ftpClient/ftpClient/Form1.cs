@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -19,7 +20,7 @@ namespace ftpClient
         }
 
         private FtpClient ftpClient;
-
+        private object severTree;
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -73,6 +74,7 @@ namespace ftpClient
         private void directoryTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
             TreeViewItems.Add(e.Node);
+            textBox5.Text = e.Node.Name;
         }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -91,24 +93,41 @@ namespace ftpClient
             //实例化TreeNode类 TreeNode(string text,int imageIndex,int selectImageIndex)            
             TreeNode serverRootNode = new TreeNode("/",
             IconIndexs.Server, IconIndexs.Server);  //载入显示 选择显示
+            serverRootNode.Name = "/";
             serverRootNode.Tag = "服务器";                            //树节点数据
             serverRootNode.Text = "服务器";                           //树节点标签内容
             this.serverTree.Nodes.Add(serverRootNode);
-            /*
-            foreach (string file in fileList)
-            {
 
-            }
-
-            foreach (string directory in directoryList)
-            {
-
-            }*/
         }
 
         private void serverTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
             TreeViewItems.serverAdd(e.Node,ftpClient);
+            textBox6.Text = e.Node.Name;
+
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Console.WriteLine(directoryTree.SelectedNode.Name);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            string path = textBox5.Text;
+            string fname = textBox6.Text;
+            //Console.WriteLine(path);
+            path = Regex.Replace(path, @"\\", @"\\");
+            //Console.WriteLine(path);
+            int id = fname.Length - 1;
+            while (fname[id] != '/')
+                id--;
+            String fileName = fname.Substring(id + 1, fname.Length - id - 1);
+            path = path + "\\\\" + fileName;
+            ftpClient.downloadFile(fname, path);
+
+        }
+
+       
     }
 }
