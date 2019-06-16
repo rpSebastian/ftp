@@ -4,6 +4,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.IO;
 using System.Threading;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace ftpClient
 {
@@ -25,7 +27,7 @@ namespace ftpClient
             cs.USER(user);
             cs.PASS(pass);
         }
-        private void downloadFile(String fname)
+        public void downloadFile(String fname)
         {
             int fileSize = cs.SIZE(fname);
             int port = cs.PASV();
@@ -42,7 +44,40 @@ namespace ftpClient
                     ds.writeFileStream(fs);
                 }
             }
-            cs.RETR_END();
+            cs.DATA_END();
         }
+        public List<string> getNameList(string pathName, char type)
+        {
+            int port = cs.PASV();
+            DataSocket ds = new DataSocket(this.serverIp, port);
+            cs.LIST(pathName);
+            ds.RECV();
+            cs.DATA_END();
+            string message = ds.getMessage().Trim();
+            string[] infoList = message.Split('\n');
+            Console.WriteLine(message);
+            List<string> nameList = new List<string>();
+            for (int i = 0; i < infoList.Length; ++i)
+            {
+                String info = infoList[i].Trim();
+                int id = info.Length - 1;
+                while (info[id] != ' ')
+                    id--;
+                String name = info.Substring(id + 1, info.Length - id - 1);
+                if (info[0] == type)
+                    nameList.Add(name);
+            }
+            foreach (string file in nameList)
+            {
+                Console.WriteLine(file);
+            }
+            return nameList;
+        }
+            
+        //public static void Main(String[] args)
+        //{
+        //    FtpClient fc = new FtpClient();
+        //    fc.login()   
+        //}
     }
 }

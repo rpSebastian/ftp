@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace ftpClient
 {
@@ -31,6 +32,11 @@ namespace ftpClient
         public void writeFileStream(FileStream fs)
         {
             fs.Write(buffer, 0, bufferLength);
+        }
+        public string getMessage()
+        { 
+            String message = Encoding.UTF8.GetString(buffer, 0, bufferLength);
+            return message;
         }
     }
 }

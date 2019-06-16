@@ -62,8 +62,13 @@ namespace ftpClient
             socket.Send(Encoding.UTF8.GetBytes($"RETR {fname}\r\n"));
             receiveMessage();
         }
-        public void RETR_END()
+        public void DATA_END()
         {
+            receiveMessage();
+        }
+        public void LIST(string fname)
+        {
+            socket.Send(Encoding.UTF8.GetBytes($"LIST {fname}\r\n"));
             receiveMessage();
         }
     }
