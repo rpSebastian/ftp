@@ -28,10 +28,12 @@ namespace ftpClient
             TreeViewItems.Add(e.Node);
         }
 
+        private FtpClient ftpClient;
 
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            
             //实例化TreeNode类 TreeNode(string text,int imageIndex,int selectImageIndex)            
             TreeNode rootNode = new TreeNode("我的电脑",
             IconIndexs.MyComputer, IconIndexs.MyComputer);  //载入显示 选择显示
@@ -80,6 +82,15 @@ namespace ftpClient
         private void directoryTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
             TreeViewItems.Add(e.Node);
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            String serverIp = textBox1.Text;
+            int serverPort = int.Parse(textBox4.Text);
+            String user = textBox2.Text;
+            String pass = textBox3.Text;
+            ftpClient = new FtpClient(serverIp, serverPort, user, pass);
         }
     }
 }

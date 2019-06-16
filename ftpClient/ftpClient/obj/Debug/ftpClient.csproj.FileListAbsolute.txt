@@ -8,3 +8,13 @@ E:\c#\ftpClient\ftpClient\obj\Debug\ftpClient.csproj.GenerateResource.cache
 E:\c#\ftpClient\ftpClient\obj\Debug\ftpClient.csproj.CoreCompileInputs.cache
 E:\c#\ftpClient\ftpClient\obj\Debug\ftpClient.exe
 E:\c#\ftpClient\ftpClient\obj\Debug\ftpClient.pdb
+C:\Users\rpSebastian\source\repos\ftp\ftpClient\ftpClient\obj\Debug\ftpClient.exe
+C:\Users\rpSebastian\source\repos\ftp\ftpClient\ftpClient\obj\Debug\ftpClient.pdb
+C:\Users\rpSebastian\source\repos\ftp\ftpClient\ftpClient\bin\Debug\ftpClient.exe.config
+C:\Users\rpSebastian\source\repos\ftp\ftpClient\ftpClient\bin\Debug\ftpClient.exe
+C:\Users\rpSebastian\source\repos\ftp\ftpClient\ftpClient\bin\Debug\ftpClient.pdb
+C:\Users\rpSebastian\source\repos\ftp\ftpClient\ftpClient\obj\Debug\ftpClient.csprojAssemblyReference.cache
+C:\Users\rpSebastian\source\repos\ftp\ftpClient\ftpClient\obj\Debug\ftpClient.Form1.resources
+C:\Users\rpSebastian\source\repos\ftp\ftpClient\ftpClient\obj\Debug\ftpClient.Properties.Resources.resources
+C:\Users\rpSebastian\source\repos\ftp\ftpClient\ftpClient\obj\Debug\ftpClient.csproj.GenerateResource.cache
+C:\Users\rpSebastian\source\repos\ftp\ftpClient\ftpClient\obj\Debug\ftpClient.csproj.CoreCompileInputs.cache

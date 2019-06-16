@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using System.Threading;
 
-namespace client
+namespace ftpClient
 {
     class FtpClient
     {
@@ -43,12 +43,6 @@ namespace client
                 }
             }
             cs.RETR_END();
-        }
-        public static void Main(string[] args)
-        {
-            FtpClient fc = new FtpClient();
-            fc.login();
-            fc.downloadFile("ftp.exe");
         }
     }
 }

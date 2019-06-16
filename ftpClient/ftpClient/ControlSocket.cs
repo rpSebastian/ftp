@@ -4,7 +4,7 @@ using System.Text;
 using System.Net.Sockets;
 
 
-namespace client
+namespace ftpClient
 {
     class ControlSocket
     {

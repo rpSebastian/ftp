@@ -5,3 +5,5 @@ E:\c#\ftpClient\test\obj\Debug\test.csproj.CoreCompileInputs.cache
 E:\c#\ftpClient\test\obj\Debug\test.exe
 E:\c#\ftpClient\test\obj\Debug\test.pdb
 E:\c#\ftpClient\test\obj\Debug\test.csprojAssemblyReference.cache
+C:\Users\rpSebastian\source\repos\ftp\ftpClient\test\obj\Debug\test.exe
+C:\Users\rpSebastian\source\repos\ftp\ftpClient\test\obj\Debug\test.pdb
