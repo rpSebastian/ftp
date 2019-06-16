@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ftpClient", "ftpClient\ftpClient.csproj", "{1AF076C8-88BD-4C8E-B9D5-03F3209C6975}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "test\test.csproj", "{A43EB89C-D0D0-4501-99EF-BE78C79108EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1AF076C8-88BD-4C8E-B9D5-03F3209C6975}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AF076C8-88BD-4C8E-B9D5-03F3209C6975}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AF076C8-88BD-4C8E-B9D5-03F3209C6975}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AF076C8-88BD-4C8E-B9D5-03F3209C6975}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A43EB89C-D0D0-4501-99EF-BE78C79108EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A43EB89C-D0D0-4501-99EF-BE78C79108EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A43EB89C-D0D0-4501-99EF-BE78C79108EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A43EB89C-D0D0-4501-99EF-BE78C79108EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7D60CB59-690E-4C3A-8DB1-A6C70B2862C7}
+	EndGlobalSection
+EndGlobal

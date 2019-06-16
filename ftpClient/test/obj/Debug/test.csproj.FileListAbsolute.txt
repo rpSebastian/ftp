@@ -1,0 +1,7 @@
+E:\c#\ftpClient\test\bin\Debug\test.exe.config
+E:\c#\ftpClient\test\bin\Debug\test.exe
+E:\c#\ftpClient\test\bin\Debug\test.pdb
+E:\c#\ftpClient\test\obj\Debug\test.csproj.CoreCompileInputs.cache
+E:\c#\ftpClient\test\obj\Debug\test.exe
+E:\c#\ftpClient\test\obj\Debug\test.pdb
+E:\c#\ftpClient\test\obj\Debug\test.csprojAssemblyReference.cache

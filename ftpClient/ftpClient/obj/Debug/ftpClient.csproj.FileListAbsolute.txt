@@ -1,0 +1,10 @@
+E:\c#\ftpClient\ftpClient\bin\Debug\ftpClient.exe.config
+E:\c#\ftpClient\ftpClient\bin\Debug\ftpClient.exe
+E:\c#\ftpClient\ftpClient\bin\Debug\ftpClient.pdb
+E:\c#\ftpClient\ftpClient\obj\Debug\ftpClient.csprojAssemblyReference.cache
+E:\c#\ftpClient\ftpClient\obj\Debug\ftpClient.Form1.resources
+E:\c#\ftpClient\ftpClient\obj\Debug\ftpClient.Properties.Resources.resources
+E:\c#\ftpClient\ftpClient\obj\Debug\ftpClient.csproj.GenerateResource.cache
+E:\c#\ftpClient\ftpClient\obj\Debug\ftpClient.csproj.CoreCompileInputs.cache
+E:\c#\ftpClient\ftpClient\obj\Debug\ftpClient.exe
+E:\c#\ftpClient\ftpClient\obj\Debug\ftpClient.pdb
