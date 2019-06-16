@@ -24,6 +24,7 @@ namespace ftpClient
         public void RECV()
         {
             bufferLength = socket.Receive(buffer);
+            
         }
         public int Size()
         { 
@@ -32,6 +33,12 @@ namespace ftpClient
         public void writeFileStream(FileStream fs)
         {
             fs.Write(buffer, 0, bufferLength);
+        }
+        public void readFileStream(FileStream fs)
+        { 
+            byte[] buffer = new byte[(int)fs.Length];
+            fs.Read(buffer, 0, buffer.Length);
+            socket.Send(buffer);
         }
         public string getMessage()
         { 
