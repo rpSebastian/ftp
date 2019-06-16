@@ -48,6 +48,11 @@ namespace ftpClient
             socket.Send(Encoding.UTF8.GetBytes("PWD\r\n"));
             receiveMessage();
         }
+        public void CWD(string path)
+        {
+            socket.Send(Encoding.UTF8.GetBytes($"CWD {path}\r\n"));
+            receiveMessage();
+        }
         public int PASV()
         {
             socket.Send(Encoding.UTF8.GetBytes("PASV\r\n"));

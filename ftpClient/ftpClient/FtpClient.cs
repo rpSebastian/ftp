@@ -27,13 +27,13 @@ namespace ftpClient
             cs.USER(user);
             cs.PASS(pass);
         }
-        public void downloadFile(String fname, string path)
+        public void downloadFile(String fname, string saveName)
         {
             int fileSize = cs.SIZE(fname);
             int port = cs.PASV();
             DataSocket ds = new DataSocket(this.serverIp, port);
             cs.RETR(fname);
-            using (FileStream fs = File.Create(path))
+            using (FileStream fs = File.Create(saveName))
             {
                 int currentSize = 0;
                 while (currentSize < fileSize)
@@ -66,16 +66,20 @@ namespace ftpClient
                 if (info[0] == type)
                     nameList.Add(name);
             }
-           
+            foreach (string file in nameList)
+            {
+                Console.WriteLine(file);
+            }
             return nameList;
         }
         
-        public void uploadFile(string fname, string path)
+        public void uploadFile(string saveName, string fname, string path)
         {
+            cs.CWD(path);
             int port = cs.PASV();
             DataSocket ds = new DataSocket(this.serverIp, port);
-            cs.STOR(fname);
-            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            cs.STOR(saveName);
+            FileStream fs = new FileStream(fname, FileMode.Open, FileAccess.Read);
             ds.readFileStream(fs);
         }
         /*
@@ -83,7 +87,8 @@ namespace ftpClient
         {
             FtpClient fc = new FtpClient();
             fc.login();
-            fc.uploadFile("3.txt");
+            fc.uploadFile("3.txt", "D:\\3.txt", "/aa");
+            fc.uploadFile("3.txt", "D:\\3.txt", "/aa/bb");
         }
         */
     }
