@@ -102,12 +102,14 @@
             // 
             this.textBox3.Location = new System.Drawing.Point(760, 46);
             this.textBox3.Name = "textBox3";
+            this.textBox3.PasswordChar = '*';
             this.textBox3.Size = new System.Drawing.Size(186, 28);
             this.textBox3.TabIndex = 6;
             // 
             // textBox4
             // 
             this.textBox4.Location = new System.Drawing.Point(313, 45);
+            this.textBox4.MaxLength = 5;
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(120, 28);
             this.textBox4.TabIndex = 7;
@@ -180,6 +182,7 @@
             // 
             this.textBox5.Location = new System.Drawing.Point(66, 164);
             this.textBox5.Name = "textBox5";
+            this.textBox5.ReadOnly = true;
             this.textBox5.Size = new System.Drawing.Size(402, 28);
             this.textBox5.TabIndex = 13;
             // 
@@ -187,6 +190,7 @@
             // 
             this.textBox6.Location = new System.Drawing.Point(632, 164);
             this.textBox6.Name = "textBox6";
+            this.textBox6.ReadOnly = true;
             this.textBox6.Size = new System.Drawing.Size(402, 28);
             this.textBox6.TabIndex = 14;
             // 
@@ -214,7 +218,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "ftpClient";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

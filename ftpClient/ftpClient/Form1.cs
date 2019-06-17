@@ -24,6 +24,7 @@ namespace ftpClient
 
         private void Form1_Load(object sender, EventArgs e)
         {
+
             
             //实例化TreeNode类 TreeNode(string text,int imageIndex,int selectImageIndex)            
             TreeNode rootNode = new TreeNode("我的电脑",
@@ -66,27 +67,65 @@ namespace ftpClient
             
         }
 
+        private static bool IsIP(string ip)
+        {
+            //判断是否为IP
+            return Regex.IsMatch(ip, @"^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$");
+        }
+
+        private bool isLinked = false;
         private void Button1_Click(object sender, EventArgs e)
         {
-            //String serverIp = textBox1.Text;
-            //int serverPort = int.Parse(textBox4.Text);
-            //String user = textBox2.Text;
-            //String pass = textBox3.Text;
-            //ftpClient = new FtpClient(serverIp, serverPort, user, pass);
-            ftpClient = new FtpClient();
-            ftpClient.login();
-            MessageBox.Show("登录成功！");
-            List<string> fileList = ftpClient.getNameList("/", '-');
-            List<string> directoryList = ftpClient.getNameList("/", 'd');
-            
-          
-            //实例化TreeNode类 TreeNode(string text,int imageIndex,int selectImageIndex)            
-            TreeNode serverRootNode = new TreeNode("/",IconIndexs.Server, IconIndexs.Server);  //载入显示 选择显示
-            serverRootNode.Name = "/";
-            serverRootNode.Tag = "服务器";                            //树节点数据
-            serverRootNode.Text = "服务器";                           //树节点标签内容
-            this.serverTree.Nodes.Add(serverRootNode);
+            if (!isLinked)
+            {
+                try
+                {
+                    bool isip = IsIP(textBox1.Text);
+                    int serverPort = int.Parse(textBox4.Text);
+                    if (!isip || serverPort < 0 || serverPort > 65535)
+                    {
+                        MessageBox.Show("IP地址或端口错误!", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+                        return;
+                    }
+                    String serverIp = textBox1.Text;
+                    String user = textBox2.Text;
+                    String pass = textBox3.Text;
 
+                    try
+                    {
+                        ftpClient = new FtpClient(serverIp, serverPort, user, pass);
+                        //ftpClient = new FtpClient();
+                        ftpClient.login();
+                    }
+                    catch (MyException exce)
+                    {
+                        MessageBox.Show(exce.Message, "", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                        return;
+                    }
+                    MessageBox.Show("登录成功!","",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                    isLinked = true;
+
+                    List<string> fileList = ftpClient.getNameList("/", '-');
+                    List<string> directoryList = ftpClient.getNameList("/", 'd');
+
+
+                    //实例化TreeNode类 TreeNode(string text,int imageIndex,int selectImageIndex)            
+                    TreeNode serverRootNode = new TreeNode("/", IconIndexs.Server, IconIndexs.Server);  //载入显示 选择显示
+                    serverRootNode.Name = "/";
+                    serverRootNode.Tag = "服务器";                            //树节点数据
+                    serverRootNode.Text = "服务器";                           //树节点标签内容
+                    this.serverTree.Nodes.Add(serverRootNode);
+                }
+                catch (System.FormatException exception)
+                {
+                    MessageBox.Show(exception.Message, "", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            else
+            {
+                return;
+            }
         }
 
         private void serverTree_AfterSelect(object sender, TreeViewEventArgs e)
@@ -101,37 +140,69 @@ namespace ftpClient
         private void button2_Click(object sender, EventArgs e)
         {
 
-            string fname = textBox5.Text;
-            string path = textBox6.Text;
-            //Console.WriteLine(path);
-            fname = Regex.Replace(fname, @"\\", @"\\");
-            //Console.WriteLine(path);
-            int id = fname.Length - 1;
-            while (fname[id] != '\\')
-                id--;
-            String fileName = fname.Substring(id + 1, fname.Length - id - 1);
+            try
+            {
+                if (!isLinked)
+                {
+                    MessageBox.Show("当前与服务器未建立连接！", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+                    return;
+                }
+                else
+                {
+                    string fname = textBox5.Text;
+                    string path = textBox6.Text;
+                    fname = Regex.Replace(fname, @"\\", @"\\");
+                    int id = fname.Length - 1;
+                    while (fname[id] != '\\')
+                        id--;
+                    String fileName = fname.Substring(id + 1, fname.Length - id - 1);
 
-            ftpClient.uploadFile(fileName, fname, path);
+                    ftpClient.uploadFile(fileName, fname, path);
+                    MessageBox.Show("上传完成！", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
 
-            Console.WriteLine(directoryTree.SelectedNode.Name);
+                    Console.WriteLine(directoryTree.SelectedNode.Name);
+                }
+            }
+            catch (System.IndexOutOfRangeException)
+            {
+                return;
+            }
+            catch (System.NullReferenceException)
+            {
+                return;
+            }
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            string path = textBox5.Text;
-            string fname = textBox6.Text;
-            //Console.WriteLine(path);
-            path = Regex.Replace(path, @"\\", @"\\");
-            //Console.WriteLine(path);
-            int id = fname.Length - 1;
-            while (fname[id] != '/')
-                id--;
-            String fileName = fname.Substring(id + 1, fname.Length - id - 1);
-            path = path + "\\\\" + fileName;
-            ftpClient.downloadFile(fname, path);
-
+            try
+            {
+                if (!isLinked)
+                {
+                    MessageBox.Show("当前与服务器未建立连接！", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+                    return;
+                }
+                else
+                {
+                    string path = textBox5.Text;
+                    string fname = textBox6.Text;
+                    //Console.WriteLine(path);
+                    path = Regex.Replace(path, @"\\", @"\\");
+                    //Console.WriteLine(path);
+                    int id = fname.Length - 1;
+                    while (fname[id] != '/')
+                        id--;
+                    String fileName = fname.Substring(id + 1, fname.Length - id - 1);
+                    path = path + "\\\\" + fileName;
+                    ftpClient.downloadFile(fname, path);
+                    MessageBox.Show("下载完成！", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+                }
+            }
+            catch (System.IndexOutOfRangeException exception1)
+            {
+                return;
+            }
         }
-
        
     }
 }

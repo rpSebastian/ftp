@@ -55,6 +55,7 @@
     </Compile>
     <Compile Include="FtpClient.cs" />
     <Compile Include="IconIndexs.cs" />
+    <Compile Include="MyException.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TreeViewItems.cs" />
