@@ -32,19 +32,6 @@ namespace ftpClient
             rootNode.Text = "我的电脑";                           //树节点标签内容
             this.directoryTree.Nodes.Add(rootNode);               //树中添加根目录
 
-
-            //显示MyDocuments(我的文档)结点
-            /* var myDocuments = Environment.GetFolderPath           //获取计算机我的文档文件夹
-            (Environment.SpecialFolder.MyDocuments);
-            TreeNode DocNode = new TreeNode(myDocuments);
-            DocNode.Tag = "我的文档";                            //设置结点名称
-            DocNode.Text = "我的文档";
-
-            DocNode.ImageIndex = IconIndexs.MyDocuments;         //设置获取结点显示图片
-            DocNode.SelectedImageIndex = IconIndexs.MyDocuments; //设置选择显示图片
-            rootNode.Nodes.Add(DocNode);                          //rootNode目录下加载节点
-            DocNode.Nodes.Add("");
-            */
             //循环遍历计算机所有逻辑驱动器名称(盘符)
             foreach (string drive in Environment.GetLogicalDrives())
             {
@@ -73,8 +60,10 @@ namespace ftpClient
 
         private void directoryTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            TreeViewItems.Add(e.Node);
             textBox5.Text = e.Node.Name;
+            if (Directory.Exists(e.Node.Name))
+                TreeViewItems.Add(e.Node);
+            
         }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -86,13 +75,13 @@ namespace ftpClient
             //ftpClient = new FtpClient(serverIp, serverPort, user, pass);
             ftpClient = new FtpClient();
             ftpClient.login();
+            MessageBox.Show("登录成功！");
             List<string> fileList = ftpClient.getNameList("/", '-');
             List<string> directoryList = ftpClient.getNameList("/", 'd');
             
           
             //实例化TreeNode类 TreeNode(string text,int imageIndex,int selectImageIndex)            
-            TreeNode serverRootNode = new TreeNode("/",
-            IconIndexs.Server, IconIndexs.Server);  //载入显示 选择显示
+            TreeNode serverRootNode = new TreeNode("/",IconIndexs.Server, IconIndexs.Server);  //载入显示 选择显示
             serverRootNode.Name = "/";
             serverRootNode.Tag = "服务器";                            //树节点数据
             serverRootNode.Text = "服务器";                           //树节点标签内容
@@ -102,13 +91,28 @@ namespace ftpClient
 
         private void serverTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            TreeViewItems.serverAdd(e.Node,ftpClient);
             textBox6.Text = e.Node.Name;
+            if (e.Node.Name[e.Node.Name.Length - 1] == '/')
+                TreeViewItems.serverAdd(e.Node,ftpClient);
+            
 
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
+
+            string fname = textBox5.Text;
+            string path = textBox6.Text;
+            //Console.WriteLine(path);
+            fname = Regex.Replace(fname, @"\\", @"\\");
+            //Console.WriteLine(path);
+            int id = fname.Length - 1;
+            while (fname[id] != '\\')
+                id--;
+            String fileName = fname.Substring(id + 1, fname.Length - id - 1);
+
+            ftpClient.uploadFile(fileName, fname, path);
+
             Console.WriteLine(directoryTree.SelectedNode.Name);
         }
 
