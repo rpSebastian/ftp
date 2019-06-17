@@ -13,6 +13,7 @@ namespace ftpClient
     {
         private ControlSocket cs;
         private IPAddress serverIp;
+        private int serverPort;
         private String user;
         private String pass;
         public FtpClient(String serverIp = "127.0.0.1", int serverPort = 12345, String user = "xh", String pass = "123456")
@@ -20,10 +21,26 @@ namespace ftpClient
             this.serverIp = IPAddress.Parse(serverIp);
             this.user = user;
             this.pass = pass;
+            this.serverPort = serverPort;
+            try
+            {
+                CallWithTimeout(connect, 2000);
+            }
+            catch (TimeoutException)
+            {
+                throw new MyException("服务器Ip或端口号错误");
+            }
+            catch (SocketException)
+            {
+                throw new MyException("端口号ip或端口号错误");
+            }
+        }
+        public void connect()
+        {
             cs = new ControlSocket(this.serverIp, serverPort);
         }
         public void login()
-        {
+        {  
             cs.USER(user);
             cs.PASS(pass);
         }
@@ -72,7 +89,6 @@ namespace ftpClient
             }
             return nameList;
         }
-        
         public void uploadFile(string saveName, string fname, string path)
         {
             cs.CWD(path);
@@ -82,14 +98,37 @@ namespace ftpClient
             FileStream fs = new FileStream(fname, FileMode.Open, FileAccess.Read);
             ds.readFileStream(fs);
         }
-        /*
+        private void CallWithTimeout(Action action, int timeoutMilliseconds)
+        {
+            Thread threadToKill = null;
+            Action wrappedAction = () =>
+            {
+                threadToKill = Thread.CurrentThread;
+                action();
+            };
+
+            IAsyncResult result = wrappedAction.BeginInvoke(null, null);
+            if (result.AsyncWaitHandle.WaitOne(timeoutMilliseconds))
+            {
+                wrappedAction.EndInvoke(result);
+            }
+            else
+            {
+                threadToKill.Abort();
+                throw new TimeoutException();
+            }
+        }
         public static void Main(String[] args)
         {
-            FtpClient fc = new FtpClient();
-            fc.login();
-            fc.uploadFile("3.txt", "D:\\3.txt", "/aa");
-            fc.uploadFile("3.txt", "D:\\3.txt", "/aa/bb");
+            try
+            {
+                FtpClient fc = new FtpClient("128.0.0.1", 12345, "xh", "123456");
+                fc.login();
+            }
+            catch (MyException e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
-        */
     }
 }

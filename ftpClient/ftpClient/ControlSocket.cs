@@ -20,7 +20,7 @@ namespace ftpClient
         }
         public ControlSocket(IPAddress serverIp, int serverPort)
         {
-            IPEndPoint ipe = new IPEndPoint(serverIp, 12345);
+            IPEndPoint ipe = new IPEndPoint(serverIp, serverPort);
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socket.Connect(ipe);
             receiveMessage();
@@ -33,7 +33,10 @@ namespace ftpClient
         public void PASS(String pass)
         {
             socket.Send(Encoding.UTF8.GetBytes($"PASS {pass}\r\n"));
-            receiveMessage();
+            string message = receiveMessage();
+            int responseCode = int.Parse(message.Substring(0, 3));
+            if (responseCode == 530)
+                throw new MyException("用户名或密码错误");
         }
         public int SIZE(String fname)
         {
