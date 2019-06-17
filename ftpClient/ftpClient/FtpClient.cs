@@ -9,14 +9,14 @@ using System.Collections.Generic;
 
 namespace ftpClient
 {
-    class FtpClient
+    class ftpClient
     {
         private ControlSocket cs;
         private IPAddress serverIp;
         private int serverPort;
         private String user;
         private String pass;
-        public FtpClient(String serverIp = "127.0.0.1", int serverPort = 12345, String user = "xh", String pass = "123456")
+        public ftpClient(String serverIp = "127.0.0.1", int serverPort = 12345, String user = "xh", String pass = "123456")
         {
             this.serverIp = IPAddress.Parse(serverIp);
             this.user = user;
@@ -122,7 +122,7 @@ namespace ftpClient
         {
             try
             {
-                FtpClient fc = new FtpClient("128.0.0.1", 12345, "xh", "123456");
+                ftpClient fc = new ftpClient("128.0.0.1", 12345, "xh", "123456");
                 fc.login();
             }
             catch (MyException e)
