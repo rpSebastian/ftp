@@ -25,6 +25,11 @@ namespace ftpClient
             socket.Connect(ipe);
             receiveMessage();
         }
+        ~ControlSocket()
+        {
+            QUIT();
+            socket.Close();
+        }
         public void USER(String user)
         {
             socket.Send(Encoding.UTF8.GetBytes($"USER {user}\r\n"));
@@ -38,18 +43,13 @@ namespace ftpClient
             if (responseCode == 530)
                 throw new MyException("用户名或密码错误");
         }
-        public int SIZE(String fname)
+        public long SIZE(String fname)
         {
             socket.Send(Encoding.UTF8.GetBytes($"SIZE {fname}\r\n"));
             String message = receiveMessage();
             int st = message.IndexOf(' ') + 1;
             int ed = message.Length - 1;
-            return int.Parse(message.Substring(st, ed - st));
-        }
-        public void PWD()
-        {
-            socket.Send(Encoding.UTF8.GetBytes("PWD\r\n"));
-            receiveMessage();
+            return long.Parse(message.Substring(st, ed - st));
         }
         public void CWD(string path)
         {
@@ -82,6 +82,16 @@ namespace ftpClient
         public void LIST(string fname)
         {
             socket.Send(Encoding.UTF8.GetBytes($"LIST {fname}\r\n"));
+            receiveMessage();
+        }
+        public void REST(long offset)
+        {
+            socket.Send(Encoding.UTF8.GetBytes($"REST {offset}\r\n"));
+            receiveMessage();
+        }
+        public void QUIT()
+        {
+            socket.Send(Encoding.UTF8.GetBytes($"QUIT\r\n"));
             receiveMessage();
         }
     }
