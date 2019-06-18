@@ -228,9 +228,13 @@ void Server::ServeFtp() {
                 while (dp != nullptr) {
                     struct dirent *dr = readdir(dp);
                     if (dr == nullptr) break;
-                    if (strcmp(dr->d_name, ".") == 0 || strcmp(dr->d_name, "..") == 0)
-                        continue;
-                    wrSk.SendBuf(dr->d_name, strlen(dr->d_name), MSG_NOSIGNAL);
+                    auto type = dr->d_type;
+                    char typech = '-';
+                    if (type == DT_DIR) typech = 'd';
+                    else if (type == DT_LNK) typech = 'l';
+                    std::ostringstream os;
+                    os << typech << ' ' << dr->d_name << '\n';
+                    wrSk.Send(os.str(), MSG_NOSIGNAL);
                     if (ErrorPipe()) break;
                 }
                 closedir(dp);
