@@ -1,5 +1,6 @@
 #pragma once
 
+#include <signal.h>
 #include <cerrno>
 #include <string>
 #include <sys/socket.h>
