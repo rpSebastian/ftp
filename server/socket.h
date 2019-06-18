@@ -9,6 +9,10 @@
 #include <unistd.h>
 #include <sys/socket.h>
 
+#ifndef EPIPE
+#define EPIPE (0xffff)
+#endif
+
 class Socket {
 private:
     constexpr static size_t kDefaultBufSize = 4096;
@@ -18,9 +22,12 @@ public:
     explicit Socket(int sockfd);
     ~Socket() noexcept;
 
+    static void SigHandler(int signo);
+
     int Send(const std::string &msg, int flags = 0);
     int SendBuf(const char *buf, size_t size, int flags = 0);
     std::string Recv();
+    int RecvBuf(char *buf, size_t size);
     Socket Accept();
 
     int Reset(int sockfd);
