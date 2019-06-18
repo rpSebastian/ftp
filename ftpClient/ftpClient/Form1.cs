@@ -24,25 +24,20 @@ namespace ftpClient
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
-            
-            //实例化TreeNode类 TreeNode(string text,int imageIndex,int selectImageIndex)            
             TreeNode rootNode = new TreeNode("我的电脑",
-            IconIndexs.MyComputer, IconIndexs.MyComputer);  //载入显示 选择显示
+            IconIndexs.MyComputer, IconIndexs.MyComputer);       //载入显示 选择显示
             rootNode.Tag = "我的电脑";                            //树节点数据
             rootNode.Text = "我的电脑";                           //树节点标签内容
-            this.directoryTree.Nodes.Add(rootNode);               //树中添加根目录
+            this.directoryTree.Nodes.Add(rootNode);              //树中添加根目录
 
-            //循环遍历计算机所有逻辑驱动器名称(盘符)
+           //循环遍历计算机所有逻辑驱动器名称(盘符)
             foreach (string drive in Environment.GetLogicalDrives())
             {
-                //实例化DriveInfo对象 命名空间System.IO
                 var dir = new DriveInfo(drive);
                 switch (dir.DriveType)           //判断驱动器类型
                 {
                     case DriveType.Fixed:        //仅取固定磁盘盘符 Removable-U盘 
                         {
-                            //Split仅获取盘符字母
                             TreeNode tNode = new TreeNode(dir.Name.Split(':')[0]);
                             tNode.Name = dir.Name;
                             tNode.Tag = tNode.Name;
@@ -64,7 +59,6 @@ namespace ftpClient
             textBox5.Text = e.Node.Name;
             if (Directory.Exists(e.Node.Name))
                 TreeViewItems.Add(e.Node);
-            
         }
 
         private static bool IsIP(string ip)
@@ -133,13 +127,10 @@ namespace ftpClient
             textBox6.Text = e.Node.Name;
             if (e.Node.Name[e.Node.Name.Length - 1] == '/')
                 TreeViewItems.serverAdd(e.Node,ftpClient);
-            
-
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-
             try
             {
                 if (!isLinked)
@@ -159,8 +150,7 @@ namespace ftpClient
 
                     ftpClient.uploadFile(fileName, fname, path);
                     MessageBox.Show("上传完成！", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
-
-                    Console.WriteLine(directoryTree.SelectedNode.Name);
+                    
                 }
             }
             catch (System.IndexOutOfRangeException)
