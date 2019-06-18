@@ -80,7 +80,6 @@ namespace ftpClient
             while (true)
             {
                 ds.RECV();
-                Console.WriteLine(ds.Size());
                 if (ds.Size() == 0)
                     break;
                 message += ds.getMessage();
@@ -88,7 +87,6 @@ namespace ftpClient
             message = message.Trim();
             cs.DATA_END();
             string[] infoList = message.Split('\n');
-            Console.WriteLine(message);
             List<string> nameList = new List<string>();
             for (int i = 0; i < infoList.Length; ++i)
             {
@@ -114,6 +112,7 @@ namespace ftpClient
             cs.STOR(saveName);
             FileStream fs = new FileStream(fname, FileMode.Open, FileAccess.Read);
             ds.readFileStream(fs);
+            //cs.DATA_END();
         }
         private void CallWithTimeout(Action action, int timeoutMilliseconds)
         {

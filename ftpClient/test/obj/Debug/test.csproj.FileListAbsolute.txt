@@ -7,3 +7,10 @@ E:\c#\ftpClient\test\obj\Debug\test.pdb
 E:\c#\ftpClient\test\obj\Debug\test.csprojAssemblyReference.cache
 C:\Users\rpSebastian\source\repos\ftp\ftpClient\test\obj\Debug\test.exe
 C:\Users\rpSebastian\source\repos\ftp\ftpClient\test\obj\Debug\test.pdb
+E:\c#\ftp\ftpClient\test\obj\Debug\test.csprojAssemblyReference.cache
+E:\c#\ftp\ftpClient\test\obj\Debug\test.csproj.CoreCompileInputs.cache
+E:\c#\ftp\ftpClient\test\obj\Debug\test.exe
+E:\c#\ftp\ftpClient\test\obj\Debug\test.pdb
+E:\c#\ftp\ftpClient\test\bin\Debug\test.exe.config
+E:\c#\ftp\ftpClient\test\bin\Debug\test.exe
+E:\c#\ftp\ftpClient\test\bin\Debug\test.pdb

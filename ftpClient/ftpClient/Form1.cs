@@ -74,6 +74,8 @@ namespace ftpClient
             {
                 try
                 {
+                    textBox4.Text = "9090";
+                    textBox1.Text = "192.168.31.164";
                     bool isip = IsIP(textBox1.Text);
                     int serverPort = int.Parse(textBox4.Text);
                     if (!isip || serverPort < 0 || serverPort > 65535)
@@ -83,8 +85,7 @@ namespace ftpClient
                     }
                     String serverIp = textBox1.Text;
                     String user = textBox2.Text;
-                    String pass = textBox3.Text;
-
+                    String pass = textBox3.Text;    
                     try
                     {
                         ftpClient = new FtpClient(serverIp, serverPort, user, pass);
@@ -136,6 +137,7 @@ namespace ftpClient
                 }
                 else
                 {
+                    Console.WriteLine("上传");
                     string fname = textBox5.Text;
                     string path = textBox6.Text;
                     fname = Regex.Replace(fname, @"\\", @"\\");
@@ -143,8 +145,9 @@ namespace ftpClient
                     while (fname[id] != '\\')
                         id--;
                     String fileName = fname.Substring(id + 1, fname.Length - id - 1);
-
+                    //写日志
                     ftpClient.uploadFile(fileName, fname, path);
+                    //删除日志
                     MessageBox.Show("上传完成！", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
                     
                 }
@@ -184,7 +187,7 @@ namespace ftpClient
                     MessageBox.Show("下载完成！", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
                 }
             }
-            catch (System.IndexOutOfRangeException exception1)
+            catch (System.IndexOutOfRangeException)
             {
                 return;
             }

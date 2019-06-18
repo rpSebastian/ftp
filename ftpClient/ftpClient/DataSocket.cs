@@ -39,6 +39,9 @@ namespace ftpClient
             int count = 0;
             while (fs.Position < fs.Length)
             {
+                Console.Write(fs.Position);
+                Console.Write(" ");
+                Console.WriteLine(fs.Length);
                 count = fs.Read(buffer, 0, buffer.Length);
                 socket.Send(buffer, count, 0);
             }

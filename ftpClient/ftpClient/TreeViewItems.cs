@@ -81,7 +81,6 @@ namespace ftpClient
                 Console.WriteLine(path);
                 List<string> fileList = ftpClient.getNameList(path, '-');
                 List<string> directoryList = ftpClient.getNameList(path, 'd');
-                Console.WriteLine(directoryList.Count);
                 //获取指定目录中的子目录名称并加载结点
                 foreach (string dicName in directoryList)
                 {
