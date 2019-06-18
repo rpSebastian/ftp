@@ -57,6 +57,7 @@ Server::Server(const std::string &host, int port, std::string filepath) :
             socket_.Reset(fd);
         }
     }
+    signal(SIGPIPE, Socket::SigHandler);
 }
 
 bool Server::IsSockOk() const {
@@ -71,14 +72,14 @@ void Server::TestServe() {
         Socket clsk = socket_.Accept();
         if (!clsk.IsOk())
             continue;
-        clsk.Send("Hello, nice to meet you!", MSG_NOSIGNAL);
+        clsk.Send("Hello, nice to meet you!");
         std::string msg;
         msg = clsk.Recv();
         Log("Recv: " + msg);
         while (!msg.empty()) {
             if (msg == "end all")
                 return;
-            int n = clsk.Send(msg, MSG_NOSIGNAL);
+            int n = clsk.Send(msg);
             if (n == EPIPE)
                 Log("Error: Client shutdown the connection");
             msg = clsk.Recv();
@@ -122,20 +123,20 @@ void Server::ServeFtp() {
         msg = clsk.Recv();
         if (msg.size() <= 5 || msg.substr(0, 5) != "USER ") {
             Log("user command not correct");
-            clsk.Send("user command not correct", MSG_NOSIGNAL);
+            clsk.Send("user command not correct");
             continue;
         }
         // TODO: check user's username
-        clsk.Send(FtpResponse::passwd, MSG_NOSIGNAL);
+        clsk.Send(FtpResponse::passwd);
         if (ErrorPipe()) continue;
         msg = clsk.Recv();
         if (msg.size() <= 5 || msg.substr(0, 5) != "PASS ") {
             Log("password command error");
-            clsk.Send("password command not correct", MSG_NOSIGNAL);
+            clsk.Send("password command not correct");
             continue;
         }
         // TODO: check user's password
-        clsk.Send(FtpResponse::passwdOk, MSG_NOSIGNAL);
+        clsk.Send(FtpResponse::passwdOk);
         if (ErrorPipe()) continue;
         //---------------------------------------------------------
 
@@ -153,14 +154,14 @@ void Server::ServeFtp() {
             if (cmd == "SIZE" && cmds.size() > 1) {
                 std::string filename = currPath + cmds[1];
                 size_t sz = getFileSize(filename);
-                clsk.Send("213 " + std::to_string(sz), MSG_NOSIGNAL);
+                clsk.Send("213 " + std::to_string(sz));
                 if (ErrorPipe()) break;
             } else if (cmd == "CWD" && cmds.size() > 1) {
                 if (cmds[1].back() != '/') cmds[1].push_back('/');
                 std::string pathname = currPath + cmds[1];
                 std::ostringstream os;
                 os << "250 \"" << pathname << "\" is current directory.";
-                clsk.Send(os.str(), MSG_NOSIGNAL);
+                clsk.Send(os.str());
                 if (ErrorPipe()) break;
                 if (pathname.back() != '/') pathname.push_back('/');
                 currPath = pathname;
@@ -176,7 +177,7 @@ void Server::ServeFtp() {
                 os << "227 Entering Passive Mode (" << tmpHost << ","
                    << port / 256 << "," << port % 256 << ").";
 
-                clsk.Send(os.str(), MSG_NOSIGNAL);
+                clsk.Send(os.str());
                 if (ErrorPipe()) break;
             } else if (cmd == "RETR" && cmds.size() > 1) {
                 std::string filename = currPath + cmds[1];
@@ -186,7 +187,7 @@ void Server::ServeFtp() {
                     break;
                 }
 
-                clsk.Send(FtpResponse::startFileTransfer, MSG_NOSIGNAL);
+                clsk.Send(FtpResponse::startFileTransfer);
                 if (ErrorPipe()) break;
                 Socket wrSk = accSk.Accept();
                 assert(wrSk.IsOk());
@@ -195,15 +196,15 @@ void Server::ServeFtp() {
                 int fd;
                 fd = open(filename.c_str(), O_RDONLY);
                 if (fd > 0) {
-                    char buf[4096];
+                    char buf[kBufSize];
                     int n;
                     while ((n = read(fd, buf, sizeof(buf))) > 0) {
-                        wrSk.SendBuf(buf, n, MSG_NOSIGNAL);
+                        wrSk.SendBuf(buf, n);
                         if (ErrorPipe()) break;
                     }
                 }
                 close(fd);
-                clsk.Send(FtpResponse::stopFileTransfer, MSG_NOSIGNAL);
+                clsk.Send(FtpResponse::stopFileTransfer);
                 if (ErrorPipe()) break;
             } else if (cmd == "LIST") {
                 std::string pathname = currPath;
@@ -219,7 +220,7 @@ void Server::ServeFtp() {
                     break;
                 }
 
-                clsk.Send(FtpResponse::startListTransfer, MSG_NOSIGNAL);
+                clsk.Send(FtpResponse::startListTransfer);
                 if (ErrorPipe()) break;
                 Socket wrSk = accSk.Accept();
 
@@ -234,11 +235,11 @@ void Server::ServeFtp() {
                     else if (type == DT_LNK) typech = 'l';
                     std::ostringstream os;
                     os << typech << ' ' << dr->d_name << '\n';
-                    wrSk.Send(os.str(), MSG_NOSIGNAL);
+                    wrSk.Send(os.str());
                     if (ErrorPipe()) break;
                 }
                 closedir(dp);
-                clsk.Send(FtpResponse::stopListTransfer, MSG_NOSIGNAL);
+                clsk.Send(FtpResponse::stopListTransfer);
                 if (ErrorPipe()) break;
             } else if (cmd == "STOR" && cmds.size() > 1) {
                 std::string filename = currPath + cmds[1];
@@ -248,18 +249,21 @@ void Server::ServeFtp() {
                     break;
                 }
 
-                clsk.Send(FtpResponse::startRecvFile, MSG_NOSIGNAL);
+                clsk.Send(FtpResponse::startRecvFile);
                 if (ErrorPipe()) break;
                 Socket rdSk = accSk.Accept();
 
-                int fd;
+                int fd, n;
+                char buf[kBufSize];
                 fd = open(filename.c_str(), O_RDWR | O_TRUNC | O_CREAT);
                 if (fd > 0) {
-                    msg = rdSk.Recv();
-                    while (!msg.empty()) {
-                        write(fd, msg.c_str(), msg.size());
-                        msg = rdSk.Recv();
+                    n = rdSk.RecvBuf(buf, kBufSize);
+                    while (n > 0) {
+                        Log("Receive " + std::to_string(n) + " bytes");
+                        write(fd, buf, n);
+                        n = rdSk.RecvBuf(buf, kBufSize);
                     }
+                    Log("Connection closed by client");
                 }
                 fchmod(fd, 0600);
                 close(fd);
@@ -275,7 +279,7 @@ void Server::ServeFtp() {
 }
 
 void Server::FtpSayHello(Socket &socket) {
-    socket.Send(FtpResponse::hello, MSG_NOSIGNAL);
+    socket.Send(FtpResponse::hello);
 }
 
 inline bool Server::ErrorPipe() {

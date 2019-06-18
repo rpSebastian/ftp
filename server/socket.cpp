@@ -2,6 +2,7 @@
 // Created by jiahua on 19-6-18.
 //
 
+#include <errno.h>
 #include "socket.h"
 
 Socket::Socket(int sockfd): sockfd_(sockfd) {
@@ -71,4 +72,12 @@ Socket Socket::Release() {
     int ret = sockfd_;
     sockfd_ = -1;
     return std::move(Socket(ret));
+}
+
+void Socket::SigHandler(int signo) {
+    errno = EPIPE;
+}
+
+int Socket::RecvBuf(char *buf, size_t size) {
+    return recv(sockfd_, buf, size, 0);
 }
