@@ -31,8 +31,8 @@ int main(int argc, const char *argv[]) {
         path = mp["prefix"];
 
 
-    Server server("127.0.0.1", port, path);
-    cout << server.IsSockOk() << endl;
+    Server server(host, port, path);
+    assert(server.IsSockOk());
     server.ServeFtp();
 }
 
