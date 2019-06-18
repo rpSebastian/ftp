@@ -35,10 +35,13 @@ namespace ftpClient
             fs.Write(buffer, 0, bufferLength);
         }
         public void readFileStream(FileStream fs)
-        { 
-            byte[] buffer = new byte[(int)fs.Length];
-            fs.Read(buffer, 0, buffer.Length);
-            socket.Send(buffer);
+        {
+            int count = 0;
+            while (fs.Position < fs.Length)
+            {
+                count = fs.Read(buffer, 0, buffer.Length);
+                socket.Send(buffer, count, 0);
+            }
         }
         public string getMessage()
         { 

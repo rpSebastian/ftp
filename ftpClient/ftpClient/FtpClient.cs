@@ -46,10 +46,19 @@ namespace ftpClient
         }
         public void downloadFile(String fname, string saveName)
         {
-            int fileSize = cs.SIZE(fname);
+            long fileSize = cs.SIZE(fname);
             int port = cs.PASV();
             DataSocket ds = new DataSocket(this.serverIp, port);
             cs.RETR(fname);
+            /*
+            if (File.Exists(saveName))
+            {
+                FileStream fs = File.OpenRead(saveName);
+                long currentSize = fs.Length;
+                cs.REST(currentSize);  
+            }
+            else
+            */
             using (FileStream fs = File.Create(saveName))
             {
                 int currentSize = 0;
@@ -122,9 +131,11 @@ namespace ftpClient
         {
             try
             {
-
-                FtpClient fc = new FtpClient("128.0.0.1", 12345, "xh", "123456");
+                FtpClient fc = new FtpClient("127.0.0.1", 12345, "xh", "123456");
                 fc.login();
+                //fc.downloadFile("1.mp4", "D:\\1.mp4");
+                fc.uploadFile("f.txt", "D:\\a.txt", "/");
+                //fc.getNameList("/", '-');
             }
             catch (MyException e)
             {
