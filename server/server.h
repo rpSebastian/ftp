@@ -10,6 +10,7 @@ class Server {
 private:
     static constexpr int kHostNameMax = 256;
     static constexpr int kQLen = 10;
+    static constexpr int kBufSize = 4096;
     static int freePort;
     static int getFreePort();
 private:
