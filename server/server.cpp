@@ -42,7 +42,7 @@ void Server::Log(const std::string &msg) {
 Server::Server(const std::string &host, int port, std::string filepath) :
         socket_(-1), path_(std::move(filepath)), host_(host), port_(port) {
     struct addrinfo *ailist, *aip;
-    int fd, err, n;
+    int fd, err;
 
     if ((err = getaddrinfo(host.c_str(),
                            std::to_string(port).c_str(),
@@ -110,7 +110,6 @@ void Server::ServeFtp() {
     Log("FTP Server Start running on " + host_ + ": "
         + std::to_string(port_) + " with prefix: " + path_);
     for (;;) {
-        int err;
         std::string msg;
         Socket clsk = socket_.Accept();
         Socket dtsk(-1);

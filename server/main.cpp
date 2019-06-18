@@ -31,7 +31,7 @@ int main(int argc, const char *argv[]) {
         path = mp["prefix"];
 
 
-    Server server("127.0.0.1", 9090, path);
+    Server server("127.0.0.1", port, path);
     cout << server.IsSockOk() << endl;
     server.ServeFtp();
 }
