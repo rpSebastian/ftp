@@ -98,11 +98,7 @@ namespace ftpClient
                     }
                     MessageBox.Show("登录成功!","",MessageBoxButtons.OK,MessageBoxIcon.Information);
                     isLinked = true;
-
-                    List<string> fileList = ftpClient.getNameList("/", '-');
-                    List<string> directoryList = ftpClient.getNameList("/", 'd');
-
-
+                    
                     //实例化TreeNode类 TreeNode(string text,int imageIndex,int selectImageIndex)            
                     TreeNode serverRootNode = new TreeNode("/", IconIndexs.Server, IconIndexs.Server);  //载入显示 选择显示
                     serverRootNode.Name = "/";

@@ -76,9 +76,17 @@ namespace ftpClient
             int port = cs.PASV();
             DataSocket ds = new DataSocket(this.serverIp, port);
             cs.LIST(pathName);
-            ds.RECV();
+            string message = "";
+            while (true)
+            {
+                ds.RECV();
+                Console.WriteLine(ds.Size());
+                if (ds.Size() == 0)
+                    break;
+                message += ds.getMessage();
+            }
+            message = message.Trim();
             cs.DATA_END();
-            string message = ds.getMessage().Trim();
             string[] infoList = message.Split('\n');
             Console.WriteLine(message);
             List<string> nameList = new List<string>();
