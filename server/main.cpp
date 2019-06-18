@@ -31,6 +31,7 @@ int main(int argc, const char *argv[]) {
         path = mp["prefix"];
 
 
+    if (path.back() != '/') path.push_back('/');
     Server server(host, port, path);
     assert(server.IsSockOk());
     server.ServeFtp();
