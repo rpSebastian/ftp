@@ -80,7 +80,7 @@ namespace ftpClient
                 while (info[id] != ' ')
                     id--;
                 String name = info.Substring(id + 1, info.Length - id - 1);
-                if (info[0] == type)
+                if (info[0] == type && name != "." && name != "..")
                     nameList.Add(name);
             }
             foreach (string file in nameList)
