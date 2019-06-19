@@ -144,6 +144,7 @@ void Server::ServeFtp() {
         //-------------------Interactivity-------------------------
         Log("Start user control");
         msg = clsk.Recv();
+        int offset = 0;
         std::string currPath = path_;
         while (!msg.empty()) {
             std::vector<std::string> cmds = parseCommand(msg);
@@ -179,7 +180,12 @@ void Server::ServeFtp() {
 
                 clsk.Send(os.str());
                 if (ErrorPipe()) break;
-            } else if (cmd == "RETR" && cmds.size() > 1) {
+            } else if (cmd == "REST" && cmds.size() > 1) {
+                int i = atoi(cmds[1].c_str());
+                if (i > 0)
+                    offset = i;
+            }
+            else if (cmd == "RETR" && cmds.size() > 1) {
                 std::string filename = currPath + cmds[1];
                 Socket accSk = dtsk.Release();
                 if (!accSk.IsOk()) {
@@ -198,6 +204,8 @@ void Server::ServeFtp() {
                 if (fd > 0) {
                     char buf[kBufSize];
                     int n;
+                    if (offset > 0)
+                        lseek(fd, offset, SEEK_SET);
                     while ((n = read(fd, buf, sizeof(buf))) > 0) {
                         wrSk.SendBuf(buf, n);
                         if (ErrorPipe()) break;
@@ -241,7 +249,7 @@ void Server::ServeFtp() {
                 closedir(dp);
                 clsk.Send(FtpResponse::stopListTransfer);
                 if (ErrorPipe()) break;
-            } else if (cmd == "STOR" && cmds.size() > 1) {
+            } else if ((cmd == "STOR" || cmd == "APPE") && cmds.size() > 1) {
                 std::string filename = currPath + cmds[1];
                 Socket accSk = dtsk.Release();
                 if (!accSk.IsOk()) {
@@ -255,7 +263,10 @@ void Server::ServeFtp() {
 
                 int fd, n;
                 char buf[kBufSize];
-                fd = open(filename.c_str(), O_RDWR | O_TRUNC | O_CREAT);
+                if (cmd == "STOR")
+                    fd = open(filename.c_str(), O_RDWR | O_TRUNC | O_CREAT);
+                else
+                    fd = open(filename.c_str(), O_RDWR | O_APPEND);
                 if (fd > 0) {
                     n = rdSk.RecvBuf(buf, kBufSize);
                     while (n > 0) {
@@ -270,7 +281,6 @@ void Server::ServeFtp() {
             } else {
                 break;
             }
-
             msg = clsk.Recv();
         }
         //---------------------------------------------------------
