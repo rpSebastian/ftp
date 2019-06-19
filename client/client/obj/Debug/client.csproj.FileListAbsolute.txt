@@ -1,6 +1,0 @@
-C:\Users\rpSebastian\source\repos\client\client\bin\Debug\client.pdb
-C:\Users\rpSebastian\source\repos\client\client\obj\Debug\client.csprojAssemblyReference.cache
-C:\Users\rpSebastian\source\repos\client\client\obj\Debug\client.csproj.CoreCompileInputs.cache
-C:\Users\rpSebastian\source\repos\client\client\obj\Debug\client.pdb
-C:\Users\rpSebastian\source\repos\client\client\bin\Debug\client.exe
-C:\Users\rpSebastian\source\repos\client\client\obj\Debug\client.exe
