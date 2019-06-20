@@ -44,29 +44,38 @@ namespace ftpClient
             cs.USER(user);
             cs.PASS(pass);
         }
-        public void downloadFile(String fname, string saveName)
+        public void downloadFile(String fname, string saveName, int continueTransport = 0)
         {
             long fileSize = cs.SIZE(fname);
+            long currentSize = 0;
+            if (continueTransport == 1)
+            { 
+                using (FileStream fs = File.OpenRead(saveName))
+                { 
+                    currentSize = fs.Length;
+                    cs.REST(currentSize);
+                }
+            }
+            else 
+            {
+                using (FileStream fs = File.Create(saveName))
+                    currentSize = 0;
+            }
             int port = cs.PASV();
             DataSocket ds = new DataSocket(this.serverIp, port);
             cs.RETR(fname);
-            /*
-            if (File.Exists(saveName))
+
+            using (FileStream fs = File.OpenWrite(saveName))
             {
-                FileStream fs = File.OpenRead(saveName);
-                long currentSize = fs.Length;
-                cs.REST(currentSize);  
-            }
-            else
-            */
-            using (FileStream fs = File.Create(saveName))
-            {
-                int currentSize = 0;
+                fs.Position = fs.Length;
                 while (currentSize < fileSize)
                 {
                     ds.RECV();
                     currentSize += ds.Size();
                     ds.writeFileStream(fs);
+                    Console.Write(currentSize);
+                    Console.Write(" ");
+                    Console.WriteLine(fileSize);
                 }
             }
             cs.DATA_END();
@@ -104,13 +113,22 @@ namespace ftpClient
             }
             return nameList;
         }
-        public void uploadFile(string saveName, string fname, string path)
+        public void uploadFile(string saveName, string fname, string path, int continueTransport = 0)
         {
             cs.CWD(path);
+            FileStream fs = new FileStream(fname, FileMode.Open, FileAccess.Read);
+            if (continueTransport == 1)
+            {
+                long fileSize = cs.SIZE(path + saveName);
+                fs.Position = fileSize;
+            }
+            Console.WriteLine(fs.Position);
             int port = cs.PASV();
             DataSocket ds = new DataSocket(this.serverIp, port);
-            cs.STOR(saveName);
-            FileStream fs = new FileStream(fname, FileMode.Open, FileAccess.Read);
+            if (continueTransport == 1)
+                cs.APPE(saveName);
+            else
+                cs.STOR(saveName);
             ds.readFileStream(fs);
             //cs.DATA_END();
         }
@@ -134,20 +152,20 @@ namespace ftpClient
                 throw new TimeoutException();
             }
         }
-       /* public static void Main(String[] args)
-        {
-            try
-            {
-                FtpClient fc = new FtpClient("127.0.0.1", 12345, "xh", "123456");
-                fc.login();
-                //fc.downloadFile("1.mp4", "D:\\1.mp4");
-                fc.uploadFile("f.txt", "D:\\a.txt", "/");
-                //fc.getNameList("/", '-');
-            }
-            catch (MyException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-        }*/
+        //public static void Main(String[] args)
+        //{
+        //    try
+        //    {
+        //        FtpClient fc = new FtpClient("192.168.31.164", 9090, "xh", "123456");
+        //        fc.login();
+        //        fc.downloadFile("1.exe", "F:\\1.exe", 1);
+        //        //fc.uploadFile("1.exe", "F:\\1.exe", "/", 1);
+        //        //fc.getNameList("/", '-');
+        //    }
+        //    catch (MyException e)
+        //    {
+        //        Console.WriteLine(e.Message);
+        //    }
+        //}
     }
 }

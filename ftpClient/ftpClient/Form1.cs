@@ -21,6 +21,7 @@ namespace ftpClient
 
         private FtpClient ftpClient;
         private object severTree;
+        
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -68,14 +69,22 @@ namespace ftpClient
         }
 
         private bool isLinked = false;
+        LogEvent log = new LogEvent();
+
+
         private void Button1_Click(object sender, EventArgs e)
         {
+            
             if (!isLinked)
             {
                 try
                 {
+                    
                     textBox4.Text = "9090";
                     textBox1.Text = "192.168.31.164";
+                    textBox3.Text = "1234";
+                    textBox2.Text = "xh";
+
                     bool isip = IsIP(textBox1.Text);
                     int serverPort = int.Parse(textBox4.Text);
                     if (!isip || serverPort < 0 || serverPort > 65535)
@@ -83,6 +92,7 @@ namespace ftpClient
                         MessageBox.Show("IP地址或端口错误!", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
                         return;
                     }
+
                     String serverIp = textBox1.Text;
                     String user = textBox2.Text;
                     String pass = textBox3.Text;    
@@ -106,6 +116,86 @@ namespace ftpClient
                     serverRootNode.Tag = "服务器";                            //树节点数据
                     serverRootNode.Text = "服务器";                           //树节点标签内容
                     this.serverTree.Nodes.Add(serverRootNode);
+
+                    
+                    //断点续传，先登录，当登录成功之后，查询日志文件，如果日志文件中的某个信息与当前输入信息是相同的，则进行断点续传
+                    // datatime + string curInfo = textBox1.Text + "\t" + textBox4.Text + "\t" 
+                    //  + textBox2.Text + "\t" + textBox3.Text + "\t" + textBox5.Text + "\t" + textBox6.Text + methods;
+
+                    string filename = "E:\\c#\\ftp\\ftpClient\\ftpClient\\event.txt";
+                    
+                    using (StreamReader sr = new StreamReader(filename))
+                    {
+                        while (!sr.EndOfStream)
+                        {
+                            string line1 = sr.ReadLine();
+                            var infos = line1.Replace("\t", "*").Split('*');
+                            if (infos[1] == textBox1.Text && infos[3] == textBox2.Text && infos[2] == textBox4.Text)
+                            {
+                                if (infos[7] == "1")//methods=1表示下载
+                                {
+
+                                    if (DialogResult.OK == MessageBox.Show("是否继续下载 " + infos[6] + " ?", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Information))
+                                    {
+                                        string path = infos[5];
+                                        string fname = infos[6];
+                                        //Console.WriteLine(path);
+                                        path = Regex.Replace(path, @"\\", @"\\");
+                                        //Console.WriteLine(path);
+                                        int id = fname.Length - 1;
+                                        while (fname[id] != '/')
+                                            id--;
+                                        String fileName = fname.Substring(id + 1, fname.Length - id - 1);
+                                        path = path + "\\\\" + fileName;
+                                        ftpClient.downloadFile(fname, path,1);
+                                        MessageBox.Show("下载完成！", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+                                        sr.Close();
+                                        //删除日志中的这一条记录
+                                        log.DeleteLog(line1.Substring(20));
+                                        
+                                        //StreamReader sr = new StreamReader(filename)
+
+
+                                    }
+                                    else
+                                    {
+                                        //删除日志中的这一条记录
+                                        continue;
+                                    }
+
+                                }
+                                else//methods 为0表示上传
+                                {
+                                    //MessageBox.Show("是否重新上传 " + infos[5] + " ?", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+                                    if (DialogResult.OK == MessageBox.Show("是否继续上传 " + infos[5] + " ?", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Information))
+                                    {
+                                        string fname = infos[5];
+                                        string path = infos[6];
+                                        fname = Regex.Replace(fname, @"\\", @"\\");
+                                        int id = fname.Length - 1;
+                                        while (fname[id] != '\\')
+                                            id--;
+                                        String fileName = fname.Substring(id + 1, fname.Length - id - 1);
+                                        ftpClient.uploadFile(fileName, fname, path,1);
+                                        MessageBox.Show("上传完成！", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+                                        //删除日志中的这一条记录
+                                        sr.Close();
+                                        log.DeleteLog(line1.Substring(20));
+
+
+                                    }
+                                    else
+                                    {
+                                        //删除日志中的这一条记录
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                        
+                        sr.Close();
+                    }
+
                 }
                 catch (System.FormatException exception)
                 {
@@ -126,6 +216,13 @@ namespace ftpClient
                 TreeViewItems.serverAdd(e.Node,ftpClient);
         }
 
+
+
+        private string upload = "0";
+        private string download = "1";
+        private string methods = null;
+        
+
         private void button2_Click(object sender, EventArgs e)
         {
             try
@@ -145,9 +242,17 @@ namespace ftpClient
                     while (fname[id] != '\\')
                         id--;
                     String fileName = fname.Substring(id + 1, fname.Length - id - 1);
-                    //写日志
+
+                    methods = upload;
+                    string strlog = textBox1.Text + "\t" + textBox4.Text + "\t" 
+                    + textBox2.Text + "\t" + textBox3.Text + "\t" + textBox5.Text + "\t" + textBox6.Text +"\t"+methods;
+                    
+
+                    log.WriteLog(strlog);
+
                     ftpClient.uploadFile(fileName, fname, path);
-                    //删除日志
+                    log.DeleteLog(strlog);
+
                     MessageBox.Show("上传完成！", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
                     
                 }
@@ -183,7 +288,17 @@ namespace ftpClient
                         id--;
                     String fileName = fname.Substring(id + 1, fname.Length - id - 1);
                     path = path + "\\\\" + fileName;
+
+
+                    methods = download;
+                    string strlog = textBox1.Text + "\t" + textBox4.Text + "\t"
+                    + textBox2.Text + "\t" + textBox3.Text + "\t" + textBox5.Text + "\t" + textBox6.Text +"\t"+ methods;
+                    
+                    log.WriteLog(strlog);
+
                     ftpClient.downloadFile(fname, path);
+                    log.DeleteLog(strlog);
+
                     MessageBox.Show("下载完成！", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
                 }
             }

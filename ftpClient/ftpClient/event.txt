@@ -1,0 +1,1 @@
+2019-06-19 23-52-04	127.0.0.1	12345	xh	123456	F:\Downloads\dotnet-sdk-2.2.203-win-x64.exe	/arm/	0

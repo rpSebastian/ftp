@@ -48,7 +48,7 @@ namespace ftpClient
             socket.Send(Encoding.UTF8.GetBytes($"SIZE {fname}\r\n"));
             String message = receiveMessage();
             int st = message.IndexOf(' ') + 1;
-            int ed = message.Length - 1;
+            int ed = message.Length;
             return long.Parse(message.Substring(st, ed - st));
         }
         public void CWD(string path)
@@ -75,6 +75,11 @@ namespace ftpClient
             socket.Send(Encoding.UTF8.GetBytes($"STOR {fname}\r\n"));
             receiveMessage();
         }
+        public void APPE(string fname)
+        {
+            socket.Send(Encoding.UTF8.GetBytes($"APPE {fname}\r\n"));
+            receiveMessage();
+        }
         public void DATA_END()
         {
             receiveMessage();
@@ -87,7 +92,6 @@ namespace ftpClient
         public void REST(long offset)
         {
             socket.Send(Encoding.UTF8.GetBytes($"REST {offset}\r\n"));
-            receiveMessage();
         }
         public void QUIT()
         {

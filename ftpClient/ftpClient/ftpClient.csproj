@@ -55,6 +55,7 @@
     </Compile>
     <Compile Include="FtpClient.cs" />
     <Compile Include="IconIndexs.cs" />
+    <Compile Include="LogEvent.cs" />
     <Compile Include="MyException.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
